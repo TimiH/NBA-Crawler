@@ -2,35 +2,45 @@ import pandas as pd
 import requests
 import time
 
+#helperfunctions
+#----------------------
+
+#gets all tables from basketball-reference.com for a certain year and team 
 def getTeamYear(team, year):
-    "gets all tables from basketball-reference.com for a certain year and team "
+    print("debug12")
+    print(team,year)
 
     link = 'https://www.basketball-reference.com/teams/' + str(team) + '/' + str(year) + '/gamelog/#sum:tgl_basic'
     request = requests.get(link)
-    filename = 'C:\\cygwin64\\home\\Tim\\pythonstuff\\' + str(team) +str(year) + '.csv'
+    filename = 'C:\cygwin64\home\Tim\pythonstuff\cookiecutter-data-science\Predict_NBA\data\raw' + str(team) +str(year) + '.csv'
     if request.status_code == 200:
         sauce = pd.read_html(link, header = 0)
         for df in sauce:
-            df.drop_duplicates(subset=None,keep='first').to_csv('C:\\cygwin64\\home\\Tim\\pythonstuff\\data\\'+ str(team) +'_'+ str(year) + '.csv' , encoding='utf-8', index=False)
+            df.to_csv(filename , encoding='utf-8', index=False)
             return;
     else:
-        print('Web site does not exist')
+        print('Web page error')
+        print(link)
     return;
 
-
-
-def getAllFromTo(start, end):
-    teams = ['ATL','BOS','CHH','CHI','CLE','DAL','DEN','DET','GSW','HOU','IND','LAC','LAL','MIA','MIL','MIN','NYK','ORL','PHI','PHO','POR','SAC','SAS','SEA','UTA','WSB']
-
-    for t in teams:
-        s = start
-        e = end
-        while s != e+1:
-            try:
-                getTeamYear(team = t,year = s)
-            except Exception as e:
-                print(e)
-            getTeamYear(team = t,year = s)
-            s = s+1
+#getTeamnames that are relevant during that year
+def getAll():
+    teams = pd.read_csv('teamNamesPerYear.csv',index_col=0)
+    print("debug1")
+    
+    for index, row in teams.iterrows():
+            getTeamYear(str(index),str(row))
+            #print(row, index)
             time.sleep(1)
-        print("Just done " + str(t))
+    
+    return;
+    
+
+    
+    
+#script
+teams = pd.read_csv('teamNamesPerYear.csv',index_col=0)
+
+#getTeamYear(ATL,1980)
+
+C:\cygwin64\home\Tim\pythonstuff\cookiecutter-data-science\Predict_NBA\data\raw

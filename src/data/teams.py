@@ -1,22 +1,23 @@
 import pandas as pd
 
-#reading file and transposing
-df = pd.read_csv('NBA Teamz.csv')
-df = df.T
-df
+#reading file that has been compiled by hand
+df = pd.read_csv('NBA_teams.csv')
 
 #creating final dataframe that will be exported as an object
+current = 1980
 final = []
 
-#Initialising variable to count while
-x=1
-while x!=38: #start at 1 and do all years
-    y = []   #array for teams
-    for p in range(0,40):  #test for all p in teams for year x
-        if df.iloc[x, p] == 1:
-            y.append(str(df.iloc[0,p])) #add string
-    final.append(y) #add to final frame
-    x=x+1
+#iterates over all years since 1980
+for column in df.columns[1::]:
+    y = [current]                               
+    for row in range(0,len(df)):
+        if df.loc[row, column] == 1:
+            y.append(df.loc[row,"Team/Year"])
+    current = current +1
+    final.append(y)
 
-output = pd.DataFrame(final, index=df.index, columns=df.columns, dtype=None, copy=False)
-output.pd.to_csv(teamsclean.csv, encoding='utf-8', index=False)
+#cleaning up Dataframe and outputting to csv
+output = pd.DataFrame(final).T
+output.columns = output.iloc[0]
+output = output.drop(0)
+output.to_csv('TeamNamesPerYear.csv', encoding='utf-8', index=True)
